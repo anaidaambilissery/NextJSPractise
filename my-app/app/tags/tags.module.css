@@ -1,0 +1,55 @@
+.header {
+  margin-bottom: 32px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.description {
+  font-size: 16px;
+  color: #6b7280;
+}
+
+.tagsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.tagCard {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.tagCard:hover {
+  border-color: #2563eb;
+  background-color: #f8fafc;
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.tagName {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.tagArrow {
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.tagCard:hover .tagArrow {
+  color: #2563eb;
+}

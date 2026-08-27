@@ -1,37 +1,102 @@
-import Pagination from '@/components/Pagination/Pagination';
-import { getArticles } from '@/lib/api';
-import { ArticlesPageProps } from '@/lib/type';
-import Link from 'next/link';
-import React from 'react'
+import React from "react";
+import Link from "next/link";
+import { Metadata } from "next";
+import { getArticles, getArticlesByTag, getTags, searchArticles } from "@/lib/api";
+import { ArticlesPageProps } from "@/lib/type";
+import ArticleCard from "@/components/ArticleCard/ArticleCard";
+import Pagination from "@/components/Pagination/Pagination";
+import SearchBar from "@/components/Search/SearchBar";
+import TagFilter from "@/components/Filter/TagFilter";
+import styles from "./articles.module.css";
 
-const ArticlesPage = async({searchParams} :ArticlesPageProps) => {
-    const params = await searchParams;
-    const page = Number(params.page) || 1;
-    const limit = Number(params.limit) || 10;
-    const datas = await getArticles(page, limit);
+export async function generateMetadata({
+  searchParams,
+}: ArticlesPageProps): Promise<Metadata> {
+  const params = await searchParams;
+  const page = params.page ? ` - Page ${params.page}` : "";
+  const filter = params.tag ? ` in #${params.tag}` : params.search ? ` matching "${params.search}"` : "";
 
-    const totalPages = Math.ceil(datas.total / limit);
-  return (
-    <main>
-      <h1>Articles</h1>
-      <p>Browse our latest technical articles.</p>
-      
-      <div>
-        {datas?.posts?.map((data)=>(
-            <article key={data.id}>
-              <Link href={`/articles/${data.id}`}>
-                <h2>{data.title}</h2>
-                </Link>
-                <p>{data.body}</p>
-            </article>
-        ))}
-      </div>
-      <Pagination
-      currentPage={page}
-      totalPages={totalPages}
-      limit={limit}/>
-    </main>
-  )
+  return {
+    title: `Articles${filter}${page}`,
+    description: `Browse technical articles and tutorials on web development${filter}.`,
+    alternates: {
+      canonical: "/articles",
+    },
+  };
 }
 
-export default ArticlesPage
+export default async function ArticlesPage({ searchParams }: ArticlesPageProps) {
+  const params = await searchParams;
+  const page = Number(params.page) || 1;
+  const limit = Number(params.limit) || 10;
+  const searchQuery = params.search?.trim() || "";
+  const selectedTag = params.tag?.trim() || "";
+
+  const [tags, articlesData] = await Promise.all([
+    getTags(),
+    searchQuery
+      ? searchArticles(searchQuery, page, limit)
+      : selectedTag
+      ? getArticlesByTag(selectedTag, page, limit)
+      : getArticles(page, limit),
+  ]);
+
+  const totalPages = Math.ceil(articlesData.total / limit);
+
+  return (
+    <main>
+      <header className={styles.header}>
+        <h1 className={styles.title}>All Articles</h1>
+        <p className={styles.description}>
+          Browse our library of technical articles, guides, and engineering tips.
+        </p>
+      </header>
+
+      {/* Search and Filter Section */}
+      <section className={styles.controls} aria-label="Article filters">
+        <SearchBar initialSearch={searchQuery} />
+        <TagFilter tags={tags} selectedTag={selectedTag} />
+      </section>
+
+      <div className={styles.resultsCount}>
+        {articlesData.total === 0 ? (
+          <p>No articles found.</p>
+        ) : (
+          <p>
+            Showing {articlesData.posts.length} of {articlesData.total} articles
+            {searchQuery && ` for "${searchQuery}"`}
+            {selectedTag && ` tagged with #${selectedTag}`}
+          </p>
+        )}
+      </div>
+
+      {/* Articles */}
+      {articlesData.posts.length > 0 ? (
+        <section aria-label="Articles list">
+          {articlesData.posts.map((article) => (
+            <ArticleCard key={article.id} article={article} />
+          ))}
+
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            limit={limit}
+            tag={selectedTag}
+            search={searchQuery}
+            baseUrl="/articles"
+          />
+        </section>
+      ) : (
+        <div className={styles.emptyState}>
+          <h2 className={styles.emptyStateTitle}>No Articles Found</h2>
+          <p className={styles.emptyStateText}>
+            We could not find any articles matching your search criteria.
+          </p>
+          <Link href="/articles" className="btn">
+            Clear Filters & View All
+          </Link>
+        </div>
+      )}
+    </main>
+  );
+}
