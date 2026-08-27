@@ -1,6 +1,7 @@
 import Pagination from '@/components/Pagination/Pagination';
 import { getArticles } from '@/lib/api';
 import { ArticlesPageProps } from '@/lib/type';
+import Link from 'next/link';
 import React from 'react'
 
 const ArticlesPage = async({searchParams} :ArticlesPageProps) => {
@@ -18,7 +19,9 @@ const ArticlesPage = async({searchParams} :ArticlesPageProps) => {
       <div>
         {datas?.posts?.map((data)=>(
             <article key={data.id}>
+              <Link href={`/articles/${data.id}`}>
                 <h2>{data.title}</h2>
+                </Link>
                 <p>{data.body}</p>
             </article>
         ))}
