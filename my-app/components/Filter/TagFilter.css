@@ -1,0 +1,27 @@
+.tag-filter-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tag-filter-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #4b5563;
+  white-space: nowrap;
+}
+
+.tag-filter-select {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #ffffff;
+  color: #1f2937;
+  cursor: pointer;
+}
+
+.tag-filter-select:focus {
+  outline: 2px solid #2563eb;
+  border-color: #2563eb;
+}

@@ -1,0 +1,61 @@
+.header {
+  margin-bottom: 28px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.description {
+  font-size: 16px;
+  color: #6b7280;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 30px;
+}
+
+@media (min-width: 640px) {
+  .controls {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.resultsCount {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 16px;
+}
+
+.emptyState {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 40px 20px;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.emptyStateTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.emptyStateText {
+  color: #6b7280;
+  margin-bottom: 16px;
+}
